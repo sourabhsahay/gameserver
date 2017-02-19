@@ -31,8 +31,8 @@ public class DefaultPlayerSession extends DefaultSession implements
     }
 
     /**
-     * Each incoming connection is made to a game room. This reference holds the
-     * association to the game room.
+     * Each incoming connection is made to a game channel. This reference holds the
+     * association to the game channel.
      */
     protected GameChannel parentGameChannel;
 

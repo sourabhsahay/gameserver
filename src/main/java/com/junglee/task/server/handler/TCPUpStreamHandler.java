@@ -2,6 +2,7 @@ package com.junglee.task.server.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junglee.task.entity.GameChannel;
+import com.junglee.task.entity.impl.PokerTableManager;
 import com.junglee.task.session.id.UniqueIDService;
 import com.junglee.task.communication.impl.TCPMessageSender;
 import com.junglee.task.entity.Player;
@@ -37,17 +38,21 @@ public class TCPUpStreamHandler extends SimpleChannelInboundHandler
     private ObjectMapper objectMapper;
     private EventDispatcher eventDispatcher;
     private SessionManagerService<SocketAddress> sessionManagerService;
+    private PokerTableManager pokerTableManager;
 
 
     @Autowired
     TCPUpStreamHandler(DBLookupService DBLookupService, UniqueIDService uniqueIDService, ObjectMapper mapper,
-                       EventDispatcher eventDispatcher, SessionManagerService sessionManagerService)
+                       EventDispatcher eventDispatcher, SessionManagerService sessionManagerService,
+                       PokerTableManager tableManager)
     {
         this.DBLookupService = DBLookupService;
         this.objectMapper = objectMapper;
         this.uniqueIDService = uniqueIDService;
         this.eventDispatcher = eventDispatcher;
         this.sessionManagerService = sessionManagerService;
+        this.pokerTableManager = tableManager;
+
 
 
     }
@@ -125,7 +130,7 @@ public class TCPUpStreamHandler extends SimpleChannelInboundHandler
 
     public void joinGameRoom(Player player, Channel channel, String refKey) throws Exception
     {
-        GameChannel gameChannel = DBLookupService.gameChannelLookup(refKey);
+        GameChannel gameChannel = pokerTableManager.createOrGetTable();
         if (null != gameChannel)
         {
             PlayerSession playerSession = gameChannel.createPlayerSession(player);
