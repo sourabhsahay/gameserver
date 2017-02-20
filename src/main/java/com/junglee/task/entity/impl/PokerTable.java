@@ -31,7 +31,7 @@ public class PokerTable extends GameChannelSession {
 
     public PokerTable(GameChannelSessionBuilder builder, GameStateManagerService
                       gameStateManagerService, SessionFactory sessionFactory, ChatService chatService,
-                      DBLookupService dbLookupService) {
+                      DBLookupService dbLookupService, PokerTableManager pokerTableManager) {
         super(builder, sessionFactory);
         PokerState state = new PokerState(this.getGameChannelName());
         state.setCards(new HashSet<Card>());
@@ -39,6 +39,7 @@ public class PokerTable extends GameChannelSession {
         stateManager.getAndSetState(state);
         addHandler(new ChatHandler(chatService));
         addHandler(new StatsManager(dbLookupService));
+        addHandler(pokerTableManager);
     }
 
 

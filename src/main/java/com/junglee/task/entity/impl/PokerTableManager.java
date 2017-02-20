@@ -2,7 +2,6 @@ package com.junglee.task.entity.impl;
 
 import com.junglee.task.entity.GameStateManagerService;
 import com.junglee.task.event.Event;
-import com.junglee.task.event.EventDispatcher;
 import com.junglee.task.event.EventHandler;
 import com.junglee.task.event.Events;
 import com.junglee.task.service.ChatService;
@@ -23,7 +22,6 @@ import java.util.List;
 @Component
 public class PokerTableManager implements EventHandler {
 
-    private EventDispatcher eventDispatcher;
     private com.junglee.task.service.DBLookupService dbLookupService;
     private UniqueIDService uniqueIDService;
     private GameStateManagerService gameStateManagerService;
@@ -32,16 +30,14 @@ public class PokerTableManager implements EventHandler {
     private ChatService chatService;
 
     @Autowired
-    public PokerTableManager(EventDispatcher eventDispatcher, DBLookupService DBLookupService, UniqueIDService uniqueIDService, GameStateManagerService
+    public PokerTableManager( DBLookupService DBLookupService, UniqueIDService uniqueIDService, GameStateManagerService
                              gameStateManagerService, SessionFactory sessionFactory, ChatService chatService) {
-        this.eventDispatcher = eventDispatcher;
         this.dbLookupService = DBLookupService;
         this.uniqueIDService = uniqueIDService;
         this.gameStateManagerService = gameStateManagerService;
         this.sessionFactory = sessionFactory;
         sessionBuilder = new GameChannelSession.GameChannelSessionBuilder(uniqueIDService);
         this.chatService = chatService;
-        eventDispatcher.addHandler(this);
     }
 
     List<PokerTable> usedTableList = Collections.synchronizedList( new ArrayList<PokerTable>());
@@ -77,7 +73,8 @@ public class PokerTableManager implements EventHandler {
     }
 
     private PokerTable createNewPokerTable() {
-        PokerTable table = new PokerTable(sessionBuilder, gameStateManagerService, sessionFactory, chatService, dbLookupService);
+        PokerTable table = new PokerTable(sessionBuilder, gameStateManagerService, sessionFactory, chatService, dbLookupService
+        , this);// pass its own instance, so it can get events from sessions.
         avaiableTableList.add(table);
         return table;
     }
