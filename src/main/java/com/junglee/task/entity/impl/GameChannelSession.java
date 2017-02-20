@@ -2,17 +2,17 @@ package com.junglee.task.entity.impl;
 
 import com.junglee.task.entity.Game;
 import com.junglee.task.entity.GameChannel;
+import com.junglee.task.entity.GameStateManagerService;
+import com.junglee.task.entity.Player;
+import com.junglee.task.event.Event;
 import com.junglee.task.event.EventDispatcher;
 import com.junglee.task.event.EventHandler;
+import com.junglee.task.event.impl.DefaultNetworkEvent;
+import com.junglee.task.event.impl.NetworkEventHandler;
 import com.junglee.task.session.PlayerSession;
 import com.junglee.task.session.SessionFactory;
 import com.junglee.task.session.id.UniqueIDService;
 import com.junglee.task.session.impl.DefaultSession;
-import com.junglee.task.entity.GameStateManagerService;
-import com.junglee.task.entity.Player;
-import com.junglee.task.event.Event;
-import com.junglee.task.event.impl.DefaultNetworkEvent;
-import com.junglee.task.event.impl.NetworkEventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,14 +42,13 @@ public abstract class GameChannelSession extends DefaultSession implements GameC
     EventDispatcher eventDispatcher;
 
 
-    protected GameChannelSession(GameChannelSessionBuilder gameRoomSessionBuilder, EventDispatcher eventDispatcher,
+    protected GameChannelSession(GameChannelSessionBuilder gameRoomSessionBuilder,
                                  SessionFactory sessionFactory)
     {
         super(gameRoomSessionBuilder);
         this.sessions = gameRoomSessionBuilder.sessions;
         this.parentGame = gameRoomSessionBuilder.parentGame;
         this.gameRoomName = gameRoomSessionBuilder.gameRoomName;
-        this.eventDispatcher = eventDispatcher;
         this.sessionFactory = sessionFactory;
     }
 
@@ -59,8 +58,8 @@ public abstract class GameChannelSession extends DefaultSession implements GameC
         protected Game parentGame;
         protected String gameRoomName;
 
-        public GameChannelSessionBuilder(EventDispatcher eventDispatcher, UniqueIDService uniqueIDService) {
-            super(eventDispatcher, uniqueIDService);
+        public GameChannelSessionBuilder( UniqueIDService uniqueIDService) {
+            super(uniqueIDService);
         }
 
         @Override

@@ -1,12 +1,11 @@
 package com.junglee.task.session.impl;
 
 import com.junglee.task.entity.GameChannel;
+import com.junglee.task.entity.Player;
 import com.junglee.task.session.PlayerSession;
+import com.junglee.task.session.Session;
 import com.junglee.task.session.SessionFactory;
 import com.junglee.task.session.id.UniqueIDService;
-import com.junglee.task.entity.Player;
-import com.junglee.task.event.EventDispatcher;
-import com.junglee.task.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,23 +17,21 @@ public class SessionFactoryImpl implements SessionFactory
 {
 
     UniqueIDService uniqueIDService;
-    EventDispatcher eventDispatcher;
 
      @Autowired
-    public SessionFactoryImpl(UniqueIDService uniqueIDService, EventDispatcher eventDispatcher) {
+    public SessionFactoryImpl(UniqueIDService uniqueIDService) {
         this.uniqueIDService = uniqueIDService;
-        this.eventDispatcher = eventDispatcher;
     }
 
     public  Session createSession()
     {
 
-        return new DefaultSession.SessionBuilder(eventDispatcher, uniqueIDService).build();
+        return new DefaultSession.SessionBuilder(uniqueIDService).build();
     }
 
     public PlayerSession createPlayerSession(GameChannel gameChannel, Player player)
     {
-        return new DefaultPlayerSession.PlayerSessionBuilder(eventDispatcher, uniqueIDService).parentGameRoom(gameChannel).player(player).build();
+        return new DefaultPlayerSession.PlayerSessionBuilder(uniqueIDService).parentGameRoom(gameChannel).player(player).build();
     }
 
 }

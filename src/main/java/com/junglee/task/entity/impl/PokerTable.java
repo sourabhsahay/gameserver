@@ -1,16 +1,18 @@
 package com.junglee.task.entity.impl;
 
-import com.junglee.task.entity.GameChannel;
+import com.junglee.task.chat.ChatHandler;
 import com.junglee.task.entity.GameStateManagerService;
 import com.junglee.task.entity.Player;
 import com.junglee.task.event.Event;
 import com.junglee.task.event.EventContext;
-import com.junglee.task.event.EventDispatcher;
 import com.junglee.task.event.Events;
 import com.junglee.task.event.impl.*;
+import com.junglee.task.service.ChatService;
+import com.junglee.task.service.DBLookupService;
 import com.junglee.task.session.PlayerSession;
 import com.junglee.task.session.Session;
 import com.junglee.task.session.SessionFactory;
+import com.junglee.task.stats.StatsManager;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,13 +29,16 @@ public class PokerTable extends GameChannelSession {
     protected static Timer timer = new Timer();
 
 
-    public PokerTable(GameChannelSessionBuilder builder, EventDispatcher eventDispatcher, GameStateManagerService
-                      gameStateManagerService, SessionFactory sessionFactory) {
-        super(builder, eventDispatcher, sessionFactory);
+    public PokerTable(GameChannelSessionBuilder builder, GameStateManagerService
+                      gameStateManagerService, SessionFactory sessionFactory, ChatService chatService,
+                      DBLookupService dbLookupService) {
+        super(builder, sessionFactory);
         PokerState state = new PokerState(this.getGameChannelName());
         state.setCards(new HashSet<Card>());
         state.setPoker_state(PokerState.POKER_STATE.WAITING_FOR_PLAYERS);
         stateManager.getAndSetState(state);
+        addHandler(new ChatHandler(chatService));
+        addHandler(new StatsManager(dbLookupService));
     }
 
 
@@ -83,21 +88,6 @@ public class PokerTable extends GameChannelSession {
                 }
             }
 
-            //Instead change implementation of sendbroadcast to only channel-specific sessions in GameChannelSession
-
-            @Override
-            protected void onStart(Event event) {
-                PlayerSession playerSession1 = (PlayerSession) getSession();
-                if(isParentGame(event))
-                {
-                    super.onStart(event);
-                }
-
-            }
-
-            private boolean isParentGame(Event event) {
-                return playerSession.getGameChannel().getGameChannelName().equals(((GameChannel)event.getEventContext().getAttachment()).getGameChannelName());
-            }
         });
 
         //broad cast to other players about joining of this player.

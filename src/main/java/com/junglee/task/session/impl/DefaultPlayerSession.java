@@ -3,7 +3,6 @@ package com.junglee.task.session.impl;
 import com.junglee.task.entity.GameChannel;
 import com.junglee.task.entity.Player;
 import com.junglee.task.event.Event;
-import com.junglee.task.event.EventDispatcher;
 import com.junglee.task.event.impl.ExecutorEventDispatcher;
 import com.junglee.task.session.PlayerSession;
 import com.junglee.task.session.id.UniqueIDService;
@@ -68,8 +67,8 @@ public class DefaultPlayerSession extends DefaultSession implements
         protected Player player = null;
         protected GameChannel parentGameChannel;
 
-        public PlayerSessionBuilder(EventDispatcher eventDispatcher, UniqueIDService uniqueIDService) {
-            super(eventDispatcher, uniqueIDService);
+        public PlayerSessionBuilder(UniqueIDService uniqueIDService) {
+            super(uniqueIDService);
         }
 
         public PlayerSession build()

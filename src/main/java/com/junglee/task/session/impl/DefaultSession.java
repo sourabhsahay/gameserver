@@ -67,8 +67,7 @@ public class DefaultSession implements Session
 
     public static class SessionBuilder
     {
-        public SessionBuilder(EventDispatcher eventDispatcher, UniqueIDService uniqueIDService) {
-            this.eventDispatcher = eventDispatcher;
+        public SessionBuilder(UniqueIDService uniqueIDService) {
             this.ID_GENERATOR_SERVICE = uniqueIDService;
         }
 

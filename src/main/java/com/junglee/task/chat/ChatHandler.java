@@ -16,13 +16,11 @@ import org.springframework.stereotype.Component;
 public class ChatHandler implements EventHandler {
 
     private ChatService chatService;
-    private EventDispatcher eventDispatcher;
 
 
     @Autowired
-    public ChatHandler(ChatService chatService, EventDispatcher eventDispatcher) {
+    public ChatHandler(ChatService chatService) {
         this.chatService = chatService;
-        eventDispatcher.addHandler(this);
     }
 
     public void onEvent(Event event) {

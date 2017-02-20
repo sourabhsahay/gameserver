@@ -5,6 +5,7 @@ import com.junglee.task.event.Event;
 import com.junglee.task.event.EventDispatcher;
 import com.junglee.task.event.EventHandler;
 import com.junglee.task.event.Events;
+import com.junglee.task.service.ChatService;
 import com.junglee.task.service.DBLookupService;
 import com.junglee.task.session.SessionFactory;
 import com.junglee.task.session.id.UniqueIDService;
@@ -23,21 +24,23 @@ import java.util.List;
 public class PokerTableManager implements EventHandler {
 
     private EventDispatcher eventDispatcher;
-    private com.junglee.task.service.DBLookupService DBLookupService;
+    private com.junglee.task.service.DBLookupService dbLookupService;
     private UniqueIDService uniqueIDService;
     private GameStateManagerService gameStateManagerService;
     private SessionFactory sessionFactory;
     private GameChannelSession.GameChannelSessionBuilder sessionBuilder;
+    private ChatService chatService;
 
     @Autowired
     public PokerTableManager(EventDispatcher eventDispatcher, DBLookupService DBLookupService, UniqueIDService uniqueIDService, GameStateManagerService
-                             gameStateManagerService, SessionFactory sessionFactory) {
+                             gameStateManagerService, SessionFactory sessionFactory, ChatService chatService) {
         this.eventDispatcher = eventDispatcher;
-        this.DBLookupService = DBLookupService;
+        this.dbLookupService = DBLookupService;
         this.uniqueIDService = uniqueIDService;
         this.gameStateManagerService = gameStateManagerService;
         this.sessionFactory = sessionFactory;
-        sessionBuilder = new GameChannelSession.GameChannelSessionBuilder(eventDispatcher, uniqueIDService);
+        sessionBuilder = new GameChannelSession.GameChannelSessionBuilder(uniqueIDService);
+        this.chatService = chatService;
         eventDispatcher.addHandler(this);
     }
 
@@ -74,7 +77,7 @@ public class PokerTableManager implements EventHandler {
     }
 
     private PokerTable createNewPokerTable() {
-        PokerTable table = new PokerTable(sessionBuilder, eventDispatcher, gameStateManagerService, sessionFactory);
+        PokerTable table = new PokerTable(sessionBuilder, gameStateManagerService, sessionFactory, chatService, dbLookupService);
         avaiableTableList.add(table);
         return table;
     }
