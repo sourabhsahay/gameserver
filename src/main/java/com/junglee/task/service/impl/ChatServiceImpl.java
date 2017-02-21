@@ -27,6 +27,7 @@ public class ChatServiceImpl implements ChatService {
             chatMessages = new ArrayList<Pair<String,String>>();
         }
         chatMessages.add(new ImmutablePair(playerId, chatMessage));
+        tableChat.put(tableId,chatMessages);
     }
 
 
