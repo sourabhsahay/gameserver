@@ -3,7 +3,7 @@ package com.junglee.task.entity.impl;
 /**
  * Created by vishwasourabh.sahay on 19/02/17.
  */
-public class Card {
+public class    Card {
     //for illustration
 
     int cardValue;

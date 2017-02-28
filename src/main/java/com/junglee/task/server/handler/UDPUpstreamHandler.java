@@ -28,7 +28,7 @@ public class UDPUpstreamHandler extends SimpleChannelInboundHandler<String>
     private static final Logger LOG = LoggerFactory.getLogger(UDPUpstreamHandler.class);
 
     @Autowired
-    private SessionManagerService<SocketAddress> udpSessionRegistry;
+    private SessionManagerService<SocketAddress> udpSessionManager;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -40,20 +40,20 @@ public class UDPUpstreamHandler extends SimpleChannelInboundHandler<String>
 
 
 
-    public SessionManagerService<SocketAddress> getUdpSessionRegistry()
+    public SessionManagerService<SocketAddress> getUdpSessionManager()
     {
-        return udpSessionRegistry;
+        return udpSessionManager;
     }
 
-    public void setUdpSessionRegistry(
-            SessionManagerService<SocketAddress> udpSessionRegistry)
+    public void setUdpSessionManager(
+            SessionManagerService<SocketAddress> udpSessionManager)
     {
-        this.udpSessionRegistry = udpSessionRegistry;
+        this.udpSessionManager = udpSessionManager;
     }
 
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, String message) throws Exception {
        SocketAddress remoteAddress = channelHandlerContext.channel().remoteAddress();
-        Session session = udpSessionRegistry.getSession(remoteAddress);
+        Session session = udpSessionManager.getSession(remoteAddress);
 
         if(null != session)
         {
@@ -83,7 +83,7 @@ public class UDPUpstreamHandler extends SimpleChannelInboundHandler<String>
                             + "the UDP MessageSender is not initialized till now",
                     event.getType());
         }
-        MessageSender messageSender = new UDPMessageSender(udpChannel, udpSessionRegistry);
+        MessageSender messageSender = new UDPMessageSender(udpChannel, udpSessionManager);
         Event connectEvent = Events.connectEvent(messageSender, true);
 
         return connectEvent;
